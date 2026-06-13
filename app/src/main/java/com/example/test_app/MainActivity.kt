@@ -2,6 +2,7 @@ package com.example.test_app
 //main_screens
 import com.example.test_app.screens.ShoppingScreen
 import com.example.test_app.screens.ProjectsScreen
+import com.example.test_app.screens.TasksScreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -92,10 +93,10 @@ fun MainScreen() {
 }
 
 // Заглушки экранов
-@Composable
-fun TasksScreen() {
-    Text("Задачи")
-}
+//@Composable
+//fun TasksScreen() {
+  //  Text("Задачи")
+//}
 
 //@Composable
 //fun ProjectsScreen() {

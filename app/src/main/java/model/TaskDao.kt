@@ -4,7 +4,7 @@ import androidx.room.*
 
 @Dao
 interface TaskDao{
-    @Query("SELECT * FROM task")
+    @Query("SELECT * FROM tasks")
     fun getAllTasks(): List<Task>
 
     @Insert
