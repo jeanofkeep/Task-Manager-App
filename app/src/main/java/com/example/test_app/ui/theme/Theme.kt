@@ -13,29 +13,36 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFF98f469),
-    secondary = Color(0xFF98f469),
+    primary = Color(0xFF7BBF9A),
+    secondary = Color(0xFF5BA07A),
     tertiary = Color(0xFF98f469),
+    background = Color(0xFF1A3A28),
+    surface = Color(0xFF1A3A28),
+    onSurface = Color(0xFFF7FAF8),
+    primaryContainer = Color(0xFF5BA07A),
+    onPrimaryContainer = Color.White,
+    secondaryContainer = Color(0xFF2D501B),
+    onSecondaryContainer = Color(0xFFB4F192),
+    surfaceVariant = Color(0xFF234431),
+    onSurfaceVariant = Color(0xFFC4C8BB)
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF91a5cc),
-    secondary = Color(0xFF91a5cc),
-    tertiary = Color(0xFF98f469),
-    background = Color(0xFFFFFFFF),
-    surface = GreenLight20,
-    surfaceContainer = GreenLight20
-
-    /* Other default colors to override
-    tertiary = Color(0xFF91a5cc),
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
+    primary = Color(0xFF5BA07A),
     onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    secondary = Color(0xFF7BBF9A),
+    tertiary = Color(0xFF98f469),
+    background = Color(0xFFF7FAF8),
+    surface = Color(0xFF7BBF9A), // Цвет для TopAppBar (шапка)
+    surfaceContainer = Color(0xFF7BBF9A),
+    onSurface = Color(0xFF1A3A28), // Основной текст (темно-зеленый)
+    primaryContainer = Color(0xFF5BA07A), // Цвет для FAB (кнопка +)
+    onPrimaryContainer = Color.White,
+    secondaryContainer = Color(0xFFE2EDE8), // Цвет индикатора в BottomBar
+    onSecondaryContainer = Color(0xFF1A3A28),
+    surfaceVariant = Color(0xFFFFFFFF), // Цвет для карточек задач (белый)
+    onSurfaceVariant = Color(0xFF444744),
+    outlineVariant = Color(0xFFDDE4DF) // Цвет обводки (светло-серый с оттенком мяты)
 )
 
 @Composable

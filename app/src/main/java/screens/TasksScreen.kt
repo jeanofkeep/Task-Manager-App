@@ -3,9 +3,11 @@
 
 package com.example.test_app.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -17,20 +19,45 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.test_app.viewmodel.TaskViewModel
-import com.composables.icons.lucide.Lucide
-import com.composables.icons.lucide.ShoppingCart
-import com.example.test_app.model.Project
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+private val dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+
+private fun formatTaskDateTime(timestamp: Long): String {
+    return dateTimeFormatter.format(
+        Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())
+    )
+}
+
+private fun toEpochMillis(date: LocalDate, time: LocalTime): Long {
+    return date.atTime(time).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
 
     val items by taskViewModel.task_list.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     var newItemName by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
+    var showDatePicker by remember { mutableStateOf(false) }
+    var showTimePicker by remember { mutableStateOf(false) }
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = { showDialog = true }) {
+            FloatingActionButton(onClick = {
+                selectedDate = LocalDate.now()
+                selectedTime = LocalTime.now()
+                showDialog = true
+            }) {
                 Icon(Icons.Filled.Add, contentDescription = "Добавить")
             }
         }
@@ -40,7 +67,12 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    )
                 ) {
                     Row(
                         modifier = Modifier
@@ -52,11 +84,17 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                             checked = item.status,
                             onCheckedChange = { taskViewModel.update_task(item) }
                         )
-                        Text(
-                            text = item.name,
-                            modifier = Modifier.weight(1f),
-                            textDecoration = if (item.status) TextDecoration.LineThrough else TextDecoration.None
-                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = item.name,
+                                textDecoration = if (item.status) TextDecoration.LineThrough else TextDecoration.None
+                            )
+                            Text(
+                                text = formatTaskDateTime(item.date),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
                         IconButton(onClick = { taskViewModel.delete_task(item) }) {
                             Icon(Icons.Filled.Delete, contentDescription = "Удалить")
                         }
@@ -66,22 +104,39 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
         }
     }
 
-    // Диалог добавления
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Новый элемент") },
+            title = { Text("Новая задача") },
             text = {
-                OutlinedTextField(
-                    value = newItemName,
-                    onValueChange = { newItemName = it },
-                    label = { Text("Название") }
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    OutlinedTextField(
+                        value = newItemName,
+                        onValueChange = { newItemName = it },
+                        label = { Text("Название") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedButton(
+                        onClick = { showDatePicker = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Дата: ${dateFormatter.format(selectedDate)}")
+                    }
+                    OutlinedButton(
+                        onClick = { showTimePicker = true },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Время: ${timeFormatter.format(selectedTime)}")
+                    }
+                }
             },
             confirmButton = {
                 TextButton(onClick = {
                     if (newItemName.isNotBlank()) {
-                        taskViewModel.insert_task(newItemName)
+                        taskViewModel.insert_task(
+                            newItemName,
+                            toEpochMillis(selectedDate, selectedTime)
+                        )
                         newItemName = ""
                         showDialog = false
                     }
@@ -89,6 +144,54 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
             },
             dismissButton = {
                 TextButton(onClick = { showDialog = false }) { Text("Отмена") }
+            }
+        )
+    }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState(
+            initialSelectedDateMillis = toEpochMillis(selectedDate, LocalTime.MIDNIGHT)
+        )
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        selectedDate = Instant.ofEpochMilli(millis)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                    }
+                    showDatePicker = false
+                }) { Text("OK") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) { Text("Отмена") }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+
+    if (showTimePicker) {
+        val timePickerState = rememberTimePickerState(
+            initialHour = selectedTime.hour,
+            initialMinute = selectedTime.minute,
+            is24Hour = true
+        )
+        AlertDialog(
+            onDismissRequest = { showTimePicker = false },
+            title = { Text("Выберите время") },
+            confirmButton = {
+                TextButton(onClick = {
+                    selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
+                    showTimePicker = false
+                }) { Text("OK") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showTimePicker = false }) { Text("Отмена") }
+            },
+            text = {
+                TimePicker(state = timePickerState)
             }
         )
     }

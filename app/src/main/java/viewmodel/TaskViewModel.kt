@@ -36,14 +36,14 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun insert_task(task_name: String) {
+    fun insert_task(task_name: String, date: Long = System.currentTimeMillis()) {
         viewModelScope.launch(Dispatchers.IO) {
             task_dao.insertTask(
                 Task(
                     id = 0,
                     name = task_name,
                     status = false,
-                    date = System.currentTimeMillis()
+                    date = date
                 )
             )
             load_tasks()

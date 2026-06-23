@@ -66,6 +66,13 @@ fun MainScreen() {
                         icon = { Icon(icons[index], contentDescription = screen.title) },
                         label = { Text(screen.title) },
                         selected = currentRoute == screen.route,
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                            indicatorColor = MaterialTheme.colorScheme.secondaryContainer
+                        ),
                         onClick = {
                             navController.navigate(screen.route) {
                                 popUpTo(navController.graph.findStartDestination().id) {
