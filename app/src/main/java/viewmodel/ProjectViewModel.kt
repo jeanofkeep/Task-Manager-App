@@ -34,14 +34,17 @@ class ProjectViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun insertProject(name: String) {
+    fun insert_project(name: String, totalTasks: Int, dueDateText: String) {
         viewModelScope.launch(Dispatchers.IO) {
             dao.insertProject(
                 Project(
                     id = 0,
                     name = name,
                     status = false,
-                    dateTime = System.currentTimeMillis()
+                    dateTime = System.currentTimeMillis(),
+                    totalTasks = totalTasks,
+                    completedTasks = 0,
+                    dueDateText = dueDateText
                 )
             )
             load_projects()

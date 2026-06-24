@@ -3,6 +3,10 @@ package com.example.test_app
 import com.example.test_app.screens.ShoppingScreen
 import com.example.test_app.screens.ProjectsScreen
 import com.example.test_app.screens.TasksScreen
+import com.example.test_app.screens.ProjectDetailScreen
+
+
+
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -14,14 +18,17 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Check
 import com.composables.icons.lucide.FolderOpen
 import com.composables.icons.lucide.ShoppingCart
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.composables.icons.lucide.Check
 import com.example.test_app.ui.theme.Test_appTheme
 
@@ -74,12 +81,17 @@ fun MainScreen() {
                             indicatorColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
                         onClick = {
-                            navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
+                            if (currentRoute == screen.route) {
+                                // Если мы уже на этом экране, сбрасываем стек до корня этого экрана
+                                navController.popBackStack(screen.route, false)
+                            } else {
+                                navController.navigate(screen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
                                 }
-                                launchSingleTop = true
-                                restoreState = true
                             }
                         }
                     )
@@ -93,8 +105,17 @@ fun MainScreen() {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Screen.Tasks.route) { TasksScreen() }
-            composable(Screen.Projects.route) { ProjectsScreen() }
+
             composable(Screen.Shopping.route) { ShoppingScreen() }
+
+            composable(Screen.Projects.route) { ProjectsScreen(navController = navController) }
+            composable(
+                route = "project_detail/{projectId}",
+                arguments = listOf(navArgument("projectId") { type = NavType.LongType })
+            ) { backStackEntry ->
+                val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
+                ProjectDetailScreen(projectId = projectId)
+            }
         }
     }
 }
