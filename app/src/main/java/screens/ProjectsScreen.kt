@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,14 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.test_app.model.ProjectTask
 import com.example.test_app.viewmodel.ProjectViewModel
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Briefcase
-import com.composables.icons.lucide.EllipsisVertical
 import com.composables.icons.lucide.Plus
+import com.composables.icons.lucide.CirclePlus
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -32,10 +36,10 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private val project_colors = listOf(
+    Color(0xFF7BBF9A), // Зеленый из темы
     Color(0xFF8B7FD1),
     Color(0xFFE8965A),
-    Color(0xFF5BA3D9),
-    Color(0xFFC2548C)
+    Color(0xFF5BA3D9)
 )
 
 private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
@@ -46,91 +50,132 @@ private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewModel = viewModel()) {
 
     val project_list by projectViewModel.project_items.collectAsState()
-    var showDialog by remember { mutableStateOf(false) }
-    var newProjectName by remember { mutableStateOf("") }
+    val all_tasks by projectViewModel.project_tasks.collectAsState()
     
+    var showProjectDialog by remember { mutableStateOf(false) }
+    var newProjectName by remember { mutableStateOf("") }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    var selectedTime by remember { mutableStateOf(LocalTime.now()) }
     var showDatePicker by remember { mutableStateOf(false) }
-    var showTimePicker by remember { mutableStateOf(false) }
+
+    var showTaskDialog by remember { mutableStateOf(false) }
+    var newTaskName by remember { mutableStateOf("") }
+    var targetProjectId by remember { mutableStateOf<Long?>(null) }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { 
                 selectedDate = LocalDate.now()
-                selectedTime = LocalTime.now()
-                showDialog = true 
+                showProjectDialog = true 
             }) {
-                Icon(Lucide.Plus, contentDescription = "Добавить")
+                Icon(Lucide.Plus, contentDescription = "Добавить проект")
             }
         }
     ) { padding ->
-        LazyColumn(modifier = Modifier.padding(padding)) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            contentPadding = PaddingValues(bottom = 80.dp)
+        ) {
             itemsIndexed(project_list) { index, project ->
                 val color = project_colors[index % project_colors.size]
-                val icon = Lucide.Briefcase // Всегда используем сундучок
+                val projectTasks = all_tasks[project.id] ?: emptyList()
                 val progress = if (project.totalTasks > 0)
                     project.completedTasks.toFloat() / project.totalTasks.toFloat()
                 else 0f
-                val percentText = (progress * 100).toInt()
-                val isDone = project.totalTasks > 0 && project.completedTasks >= project.totalTasks
 
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 6.dp)
-                        .clickable { navController.navigate("project_detail/${project.id}") },
-                    shape = RoundedCornerShape(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant
-                    )
+                    colors = CardDefaults.cardColors(containerColor = Color.White)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        // Header
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Box(
                                 modifier = Modifier
-                                    .size(40.dp)
+                                    .size(36.dp)
                                     .clip(CircleShape)
-                                    .background(color.copy(alpha = 0.15f)),
+                                    .background(color.copy(alpha = 0.1f)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(icon, contentDescription = null, tint = color)
+                                Icon(Lucide.Briefcase, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
                             }
-                            Spacer(Modifier.width(12.dp))
+                            Spacer(Modifier.width(10.dp))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(project.name, fontWeight = FontWeight.Bold)
+                                Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                                 Text(
-                                    text = "До ${project.dueDateText}",
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = "${project.completedTasks} из ${project.totalTasks} задач · до ${project.dueDateText}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = Color.Gray
                                 )
                             }
+                            
+                            Box(modifier = Modifier.width(60.dp)) {
+                                LinearProgressIndicator(
+                                    progress = { progress },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(4.dp)
+                                        .clip(RoundedCornerShape(2.dp)),
+                                    color = color,
+                                    trackColor = color.copy(alpha = 0.1f)
+                                )
+                            }
+                            
                             IconButton(onClick = { projectViewModel.deleteProject(project) }) {
-                                Icon(Icons.Filled.Delete, contentDescription = "Удалить")
+                                Icon(Icons.Filled.Delete, contentDescription = "Удалить", modifier = Modifier.size(20.dp))
                             }
                         }
-                        Spacer(Modifier.height(12.dp))
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            LinearProgressIndicator(
-                                progress = { progress },
+
+                        Spacer(Modifier.height(8.dp))
+                        Divider(color = Color(0xFFF0F0F0), thickness = 1.dp)
+                        
+                        // Tasks List
+                        projectTasks.forEach { task ->
+                            Row(
                                 modifier = Modifier
-                                    .weight(1f)
-                                    .height(6.dp)
-                                    .clip(RoundedCornerShape(4.dp)),
-                                color = color,
-                                trackColor = color.copy(alpha = 0.15f)
-                            )
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = "$percentText%",
-                                color = color,
-                                fontWeight = FontWeight.Bold,
-                                style = MaterialTheme.typography.bodySmall
-                            )
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Checkbox(
+                                    checked = task.status,
+                                    onCheckedChange = { projectViewModel.update_task(task) },
+                                    colors = CheckboxDefaults.colors(checkedColor = color)
+                                )
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = task.name,
+                                        fontSize = 14.sp,
+                                        textDecoration = if (task.status) TextDecoration.LineThrough else TextDecoration.None,
+                                        color = if (task.status) Color.Gray else Color.Unspecified
+                                    )
+                                    Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
+                                }
+                                IconButton(onClick = { projectViewModel.delete_task(task) }) {
+                                    Icon(Icons.Filled.Delete, contentDescription = "Удалить", tint = Color(0xFFEEEEEE), modifier = Modifier.size(16.dp))
+                                }
+                            }
                         }
-                        if (isDone) {
-                            Spacer(Modifier.height(6.dp))
-                            AssistChip(onClick = {}, label = { Text("Готово ✓") })
+
+                        // Add Task Button
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    targetProjectId = project.id
+                                    showTaskDialog = true
+                                }
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(Lucide.CirclePlus, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                            Spacer(Modifier.width(8.dp))
+                            Text("Добавить задачу", color = Color.Gray, fontSize = 14.sp)
                         }
                     }
                 }
@@ -138,48 +183,66 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
         }
     }
 
-    if (showDialog) {
+    // Dialog for adding project
+    if (showProjectDialog) {
         AlertDialog(
-            onDismissRequest = { showDialog = false },
+            onDismissRequest = { showProjectDialog = false },
             title = { Text("Новый проект") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newProjectName,
                         onValueChange = { newProjectName = it },
-                        label = { Text("Название") },
+                        label = { Text("Название проекта") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedButton(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Дата: ${dateFormatter.format(selectedDate)}")
-                    }
-                    OutlinedButton(
-                        onClick = { showTimePicker = true },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Время: ${timeFormatter.format(selectedTime)}")
+                        Text("Срок: ${dateFormatter.format(selectedDate)}")
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = {
                     if (newProjectName.isNotBlank()) {
-                        val formattedDate = dateFormatter.format(selectedDate)
-                        projectViewModel.insert_project(
-                            newProjectName,
-                            0, // По умолчанию 0 задач, так как поле ввода удалено
-                            formattedDate
-                        )
+                        projectViewModel.insert_project(newProjectName, 0, dateFormatter.format(selectedDate))
                         newProjectName = ""
-                        showDialog = false
+                        showProjectDialog = false
+                    }
+                }) { Text("Создать") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showProjectDialog = false }) { Text("Отмена") }
+            }
+        )
+    }
+
+    // Dialog for adding task to project
+    if (showTaskDialog) {
+        AlertDialog(
+            onDismissRequest = { showTaskDialog = false },
+            title = { Text("Новая подзадача") },
+            text = {
+                OutlinedTextField(
+                    value = newTaskName,
+                    onValueChange = { newTaskName = it },
+                    label = { Text("Что нужно сделать?") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    if (newTaskName.isNotBlank() && targetProjectId != null) {
+                        projectViewModel.insert_task(targetProjectId!!, newTaskName, dateFormatter.format(LocalDate.now()))
+                        newTaskName = ""
+                        showTaskDialog = false
                     }
                 }) { Text("Добавить") }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showTaskDialog = false }) { Text("Отмена") }
             }
         )
     }
@@ -193,9 +256,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
-                        selectedDate = Instant.ofEpochMilli(millis)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
+                        selectedDate = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
                     }
                     showDatePicker = false
                 }) { Text("OK") }
@@ -206,29 +267,5 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
         ) {
             DatePicker(state = datePickerState)
         }
-    }
-
-    if (showTimePicker) {
-        val timePickerState = rememberTimePickerState(
-            initialHour = selectedTime.hour,
-            initialMinute = selectedTime.minute,
-            is24Hour = true
-        )
-        AlertDialog(
-            onDismissRequest = { showTimePicker = false },
-            title = { Text("Выберите время") },
-            confirmButton = {
-                TextButton(onClick = {
-                    selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
-                    showTimePicker = false
-                }) { Text("OK") }
-            },
-            dismissButton = {
-                TextButton(onClick = { showTimePicker = false }) { Text("Отмена") }
-            },
-            text = {
-                TimePicker(state = timePickerState)
-            }
-        )
     }
 }

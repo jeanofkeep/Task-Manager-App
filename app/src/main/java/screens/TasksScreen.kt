@@ -4,9 +4,11 @@
 package com.example.test_app.screens
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -15,10 +17,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.test_app.viewmodel.TaskViewModel
+import com.composables.icons.lucide.Lucide
+import com.composables.icons.lucide.Calendar
+import com.composables.icons.lucide.Zap
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -80,6 +89,27 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                             .padding(horizontal = 16.dp, vertical = 8.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val isUrgent = item.date - System.currentTimeMillis() < 24 * 60 * 60 * 1000 && !item.status
+                        val iconColor = if (isUrgent) Color(0xFFE8965A) else Color(0xFF7BBF9A)
+                        val icon = if (isUrgent) Lucide.Zap else Lucide.Calendar
+
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .clip(CircleShape)
+                                .background(iconColor.copy(alpha = 0.1f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                icon,
+                                contentDescription = null,
+                                tint = iconColor,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
+
+                        Spacer(Modifier.width(8.dp))
+
                         Checkbox(
                             checked = item.status,
                             onCheckedChange = { taskViewModel.update_task(item) }
@@ -103,6 +133,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
             }
         }
     }
+
 
     if (showDialog) {
         AlertDialog(
