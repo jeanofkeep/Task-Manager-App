@@ -116,7 +116,8 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                         .height(4.dp)
                                         .clip(RoundedCornerShape(2.dp)),
                                     color = color,
-                                    trackColor = color.copy(alpha = 0.1f)
+                                    trackColor = color.copy(alpha = 0.1f),
+                                    //gapSize = 1.dp
                                 )
                             }
                             IconButton(onClick = { projectViewModel.deleteProject(project) }) {

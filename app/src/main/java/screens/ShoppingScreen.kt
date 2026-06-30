@@ -118,7 +118,6 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
             }
         }
     }
-
     // Диалог добавления
     if (showDialog) {
         AlertDialog(
