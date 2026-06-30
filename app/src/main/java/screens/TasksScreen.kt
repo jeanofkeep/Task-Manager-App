@@ -28,6 +28,8 @@ import com.example.test_app.viewmodel.TaskViewModel
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Calendar
 import com.composables.icons.lucide.Zap
+import com.example.test_app.ui.theme.Mint20
+import com.example.test_app.ui.theme.Orange40
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -47,7 +49,6 @@ private fun formatTaskDateTime(timestamp: Long): String {
 private fun toEpochMillis(date: LocalDate, time: LocalTime): Long {
     return date.atTime(time).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
@@ -90,12 +91,12 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         val isUrgent = item.date - System.currentTimeMillis() < 24 * 60 * 60 * 1000 && !item.status
-                        val iconColor = if (isUrgent) Color(0xFFE8965A) else Color(0xFF7BBF9A)
+                        val iconColor = if (isUrgent) Orange40 else Mint20
                         val icon = if (isUrgent) Lucide.Zap else Lucide.Calendar
 
                         Box(
                             modifier = Modifier
-                                .size(32.dp)
+                                .size(36.dp)
                                 .clip(CircleShape)
                                 .background(iconColor.copy(alpha = 0.1f)),
                             contentAlignment = Alignment.Center
@@ -133,8 +134,6 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
             }
         }
     }
-
-
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },

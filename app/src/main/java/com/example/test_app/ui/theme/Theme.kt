@@ -26,25 +26,23 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF234431),
     onSurfaceVariant = Color(0xFFC4C8BB)
 )
-
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF5BA07A),
-    onPrimary = Color.White,
-    secondary = Color(0xFF7BBF9A),
-    tertiary = Color(0xFF98f469),
-    background = Color(0xFFF7FAF8),
-    surface = Color(0xFF7BBF9A), // Цвет для TopAppBar (шапка)
-    surfaceContainer = Color(0xFF7BBF9A),
-    onSurface = Color(0xFF1A3A28), // Основной текст (темно-зеленый)
-    primaryContainer = Color(0xFF5BA07A), // Цвет для FAB (кнопка +)
-    onPrimaryContainer = Color.White,
-    secondaryContainer = Color(0xFFE2EDE8), // Цвет индикатора в BottomBar
-    onSecondaryContainer = Color(0xFF1A3A28),
-    surfaceVariant = Color(0xFFFFFFFF), // Цвет для карточек задач (белый)
-    onSurfaceVariant = Color(0xFF444744),
-    outlineVariant = Color(0xFFDDE4DF) // Цвет обводки (светло-серый с оттенком мяты)
+    primary = Mint20,
+    onPrimary = White100,
+    secondary = Mint40,
+    tertiary = Green70,
+    background = White40,
+    surface = Mint20, // Цвет для TopAppBar (шапка) //mint-green
+    surfaceContainer = Mint20, //mint-green
+    onSurface = Green90, // Основной текст (темно-зеленый)
+    primaryContainer = Mint40, // Цвет для FAB (кнопка +)
+    onPrimaryContainer = White100,
+    secondaryContainer = White20, // Цвет индикатора в BottomBar
+    onSecondaryContainer = Green90,
+    surfaceVariant = White100, // Цвет для карточек задач (белый)
+    onSurfaceVariant = Grey40,
+    outlineVariant = White10 // Цвет обводки (светло-серый с оттенком мяты)
 )
-
 @Composable
 fun Test_appTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -57,11 +55,9 @@ fun Test_appTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }
-
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,

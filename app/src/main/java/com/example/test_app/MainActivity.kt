@@ -79,7 +79,6 @@ fun MainScreen() {
                 }
             })
         },
-
         bottomBar = {
 
             if (currentRoute != Screen.Settings.route) {

@@ -24,23 +24,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.test_app.model.ProjectTask
+import com.example.test_app.ui.theme.icon_colors
 import com.example.test_app.viewmodel.ProjectViewModel
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Briefcase
 import com.composables.icons.lucide.Plus
 import com.composables.icons.lucide.CirclePlus
+import com.example.test_app.ui.theme.White30
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-
-private val project_colors = listOf(
-    Color(0xFF7BBF9A), // Зеленый из темы
-    Color(0xFF8B7FD1),
-    Color(0xFFE8965A),
-    Color(0xFF5BA3D9)
-)
 
 private val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -78,7 +73,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
             contentPadding = PaddingValues(bottom = 80.dp)
         ) {
             itemsIndexed(project_list) { index, project ->
-                val color = project_colors[index % project_colors.size]
+                val color = icon_colors[index % icon_colors.size]
                 val projectTasks = all_tasks[project.id] ?: emptyList()
                 val progress = if (project.totalTasks > 0)
                     project.completedTasks.toFloat() / project.totalTasks.toFloat()
@@ -102,7 +97,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     .background(color.copy(alpha = 0.1f)),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Icon(Lucide.Briefcase, contentDescription = null, tint = color, modifier = Modifier.size(18.dp))
+                                Icon(Lucide.Briefcase, contentDescription = null, tint = color, modifier = Modifier.size(16.dp))
                             }
                             Spacer(Modifier.width(10.dp))
                             Column(modifier = Modifier.weight(1f)) {
@@ -113,7 +108,6 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     color = Color.Gray
                                 )
                             }
-                            
                             Box(modifier = Modifier.width(60.dp)) {
                                 LinearProgressIndicator(
                                     progress = { progress },
@@ -125,15 +119,12 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     trackColor = color.copy(alpha = 0.1f)
                                 )
                             }
-                            
                             IconButton(onClick = { projectViewModel.deleteProject(project) }) {
                                 Icon(Icons.Filled.Delete, contentDescription = "Удалить", modifier = Modifier.size(20.dp))
                             }
                         }
-
                         Spacer(Modifier.height(8.dp))
                         Divider(color = Color(0xFFF0F0F0), thickness = 1.dp)
-                        
                         // Tasks List
                         projectTasks.forEach { task ->
                             Row(
@@ -157,11 +148,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
                                 }
                                 IconButton(onClick = { projectViewModel.delete_task(task) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Удалить", tint = Color(0xFFEEEEEE), modifier = Modifier.size(16.dp))
+                                    Icon(Icons.Filled.Delete, contentDescription = "Удалить", tint = White30, modifier = Modifier.size(16.dp))
                                 }
                             }
                         }
-
                         // Add Task Button
                         Row(
                             modifier = Modifier
@@ -182,7 +172,6 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
             }
         }
     }
-
     // Dialog for adding project
     if (showProjectDialog) {
         AlertDialog(
@@ -218,7 +207,6 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
             }
         )
     }
-
     // Dialog for adding task to project
     if (showTaskDialog) {
         AlertDialog(
@@ -246,7 +234,6 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
             }
         )
     }
-
     if (showDatePicker) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = selectedDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
