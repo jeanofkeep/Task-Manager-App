@@ -68,7 +68,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                 selectedTime = LocalTime.now()
                 showDialog = true
             }) {
-                Icon(Icons.Filled.Add, contentDescription = "Добавить")
+                Icon(Icons.Filled.Add, contentDescription = "Add")
             }
         }
     ) { padding ->
@@ -127,7 +127,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                             )
                         }
                         IconButton(onClick = { taskViewModel.delete_task(item) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Удалить")
+                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
                         }
                     }
                 }
@@ -137,26 +137,26 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Новая задача") },
+            title = { Text("New task") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newItemName,
                         onValueChange = { newItemName = it },
-                        label = { Text("Название") },
+                        label = { Text("Name") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedButton(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Дата: ${dateFormatter.format(selectedDate)}")
+                        Text("Date: ${dateFormatter.format(selectedDate)}")
                     }
                     OutlinedButton(
                         onClick = { showTimePicker = true },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("Время: ${timeFormatter.format(selectedTime)}")
+                        Text("Time: ${timeFormatter.format(selectedTime)}")
                     }
                 }
             },
@@ -170,10 +170,10 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                         newItemName = ""
                         showDialog = false
                     }
-                }) { Text("Добавить") }
+                }) { Text("Add") }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
             }
         )
     }
@@ -195,7 +195,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                 }) { Text("OK") }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Отмена") }
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -210,7 +210,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
         )
         AlertDialog(
             onDismissRequest = { showTimePicker = false },
-            title = { Text("Выберите время") },
+            title = { Text("Enter time") },
             confirmButton = {
                 TextButton(onClick = {
                     selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
@@ -218,7 +218,7 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                 }) { Text("OK") }
             },
             dismissButton = {
-                TextButton(onClick = { showTimePicker = false }) { Text("Отмена") }
+                TextButton(onClick = { showTimePicker = false }) { Text("Cancel") }
             },
             text = {
                 TimePicker(state = timePickerState)

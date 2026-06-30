@@ -38,10 +38,10 @@ import com.example.test_app.ui.theme.Test_appTheme
 
 // Экраны приложения
 sealed class Screen(val route: String, val title: String) {
-    object Tasks : Screen("tasks", "Задачи")
-    object Projects : Screen("projects", "Проекты")
-    object Shopping : Screen("shopping", "Покупки")
-    object Settings : Screen("settings", "Настройки")
+    object Tasks : Screen("tasks", "Tasks")
+    object Projects : Screen("projects", "Projects")
+    object Shopping : Screen("shopping", "Shopping")
+    object Settings : Screen("settings", "Settings")
 }
 
 class MainActivity : ComponentActivity() {
@@ -66,8 +66,8 @@ fun MainScreen() {
     val currentRoute = navBackStackEntry?.destination?.route
     //val icons = listOf(Icons.Filled.CheckBox, Icons.Filled.Folder, Icons.Filled.ShoppingCart)
     val title = when (currentRoute) {
-        Screen.Settings.route -> "Настройки"
-        else -> "Главная"
+        Screen.Settings.route -> "Settings"
+        else -> "Task Manager v1.0"
     }
 
     Scaffold(
@@ -75,7 +75,7 @@ fun MainScreen() {
             TopAppBar(title = { Text(title) },
             actions = {
                 IconButton(onClick = { navController.navigate(Screen.Settings.route)}) {
-                    Icon(Lucide.Settings, contentDescription = "Настройки")
+                    Icon(Lucide.Settings, contentDescription = "Settings")
                 }
             })
         },
@@ -131,24 +131,7 @@ fun MainScreen() {
                 val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
                 ProjectDetailScreen(projectId = projectId)
             }
-
             composable(Screen.Settings.route) { SettingsScreen() }
         }
     }
 }
-
-// Заглушки экранов
-//@Composable
-//fun TasksScreen() {
-  //  Text("Задачи")
-//}
-
-//@Composable
-//fun ProjectsScreen() {
-  //  Text("Проекты")
-//}
-
-//@Composable
-//fun ShoppingScreen() {
-  //  Text("Покупки")
-//}

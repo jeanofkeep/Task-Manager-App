@@ -56,7 +56,7 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(onClick = { showDialog = true }) {
-                Icon(Icons.Filled.Add, contentDescription = "Добавить")
+                Icon(Icons.Filled.Add, contentDescription = "Add")
             }
         }
     ) { padding ->
@@ -111,7 +111,7 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
                         )
                         */
                         IconButton(onClick = { shoppingViewModel.deleteItem_shop(item) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Удалить")
+                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
                         }
                     }
                 }
@@ -123,12 +123,12 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("Новый элемент") },
+            title = { Text("New item") },
             text = {
                 OutlinedTextField(
                     value = newItemName,
                     onValueChange = { newItemName = it },
-                    label = { Text("Название") }
+                    label = { Text("Name") }
                 )
             },
             confirmButton = {
@@ -138,10 +138,10 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
                         newItemName = ""
                         showDialog = false
                     }
-                }) { Text("Добавить") }
+                }) { Text("Add") }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
             }
         )
     }

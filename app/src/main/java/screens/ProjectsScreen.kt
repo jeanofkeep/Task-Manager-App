@@ -62,7 +62,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                 selectedDate = LocalDate.now()
                 showProjectDialog = true 
             }) {
-                Icon(Lucide.Plus, contentDescription = "Добавить проект")
+                Icon(Lucide.Plus, contentDescription = "Add project")
             }
         }
     ) { padding ->
@@ -120,7 +120,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                 )
                             }
                             IconButton(onClick = { projectViewModel.deleteProject(project) }) {
-                                Icon(Icons.Filled.Delete, contentDescription = "Удалить", modifier = Modifier.size(20.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = "Delete", modifier = Modifier.size(20.dp))
                             }
                         }
                         Spacer(Modifier.height(8.dp))
@@ -148,7 +148,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
                                 }
                                 IconButton(onClick = { projectViewModel.delete_task(task) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Удалить", tint = White30, modifier = Modifier.size(16.dp))
+                                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = White30, modifier = Modifier.size(16.dp))
                                 }
                             }
                         }
@@ -165,7 +165,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         ) {
                             Icon(Lucide.CirclePlus, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Добавить задачу", color = Color.Gray, fontSize = 14.sp)
+                            Text("Add task", color = Color.Gray, fontSize = 14.sp)
                         }
                     }
                 }
@@ -176,13 +176,13 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
     if (showProjectDialog) {
         AlertDialog(
             onDismissRequest = { showProjectDialog = false },
-            title = { Text("Новый проект") },
+            title = { Text("New project") },
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newProjectName,
                         onValueChange = { newProjectName = it },
-                        label = { Text("Название проекта") },
+                        label = { Text("Name of project") },
                         modifier = Modifier.fillMaxWidth()
                     )
                     OutlinedButton(
@@ -200,10 +200,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         newProjectName = ""
                         showProjectDialog = false
                     }
-                }) { Text("Создать") }
+                }) { Text("Add") }
             },
             dismissButton = {
-                TextButton(onClick = { showProjectDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showProjectDialog = false }) { Text("Cancel") }
             }
         )
     }
@@ -211,12 +211,12 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
     if (showTaskDialog) {
         AlertDialog(
             onDismissRequest = { showTaskDialog = false },
-            title = { Text("Новая подзадача") },
+            title = { Text("Task for project") },
             text = {
                 OutlinedTextField(
                     value = newTaskName,
                     onValueChange = { newTaskName = it },
-                    label = { Text("Что нужно сделать?") },
+                    label = { Text("Name") },
                     modifier = Modifier.fillMaxWidth()
                 )
             },
@@ -227,10 +227,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         newTaskName = ""
                         showTaskDialog = false
                     }
-                }) { Text("Добавить") }
+                }) { Text("Add") }
             },
             dismissButton = {
-                TextButton(onClick = { showTaskDialog = false }) { Text("Отмена") }
+                TextButton(onClick = { showTaskDialog = false }) { Text("Cancel") }
             }
         )
     }
@@ -249,7 +249,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                 }) { Text("OK") }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Отмена") }
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
             }
         ) {
             DatePicker(state = datePickerState)

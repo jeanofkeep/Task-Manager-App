@@ -64,3 +64,20 @@ fun Test_appTheme(
         content = content
     )
 }
+
+/*
+//"Indigo & Lavender"
+<span class="text-[8px] text-gray-400 font-mono">#5C6BC0</span>
+<span class="text-[8px] text-gray-400 font-mono">#7986CB</span>
+<span class="text-[8px] text-gray-400 font-mono">#F5F5FF</span>
+<span class="text-[8px] text-gray-400 font-mono">#FFFFFF</span>
+<span class="text-[8px] text-gray-400 font-mono">#283593</span>
+
+
+//"Slate & Amber"
+<span class="text-[8px] text-gray-400 font-mono">#37474F</span>
+<span class="text-[8px] text-gray-400 font-mono">#F59E0B</span>
+<span class="text-[8px] text-gray-400 font-mono">#F5F6F7</span>
+<span class="text-[8px] text-gray-400 font-mono">#FFFFFF</span>
+<span class="text-[8px] text-gray-400 font-mono">#263238</span>
+ */

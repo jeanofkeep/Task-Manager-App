@@ -1,7 +1,6 @@
 package com.example.test_app.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
 //Greens
 val Mint20 = Color(0xFF7BBF9A) //mint-green
 val Mint40 = Color(0xFF5BA07A) //mint-second
