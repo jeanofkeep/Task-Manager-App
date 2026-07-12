@@ -1,6 +1,5 @@
 package com.example.test_app.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -26,27 +25,53 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF234431),
     onSurfaceVariant = Color(0xFFC4C8BB)
 )
-private val LightColorScheme = lightColorScheme(
+
+private val MintColorScheme = lightColorScheme(
     primary = Mint20,
     onPrimary = White100,
     secondary = Mint40,
     tertiary = Green70,
     background = White40,
-    surface = Mint20, // Цвет для TopAppBar (шапка) //mint-green
-    surfaceContainer = Mint20, //mint-green
-    onSurface = Green90, // Основной текст (темно-зеленый)
-    primaryContainer = Mint40, // Цвет для FAB (кнопка +)
+    surface = Mint20, 
+    surfaceContainer = Mint20,
+    onSurface = Green90, 
+    primaryContainer = Mint40,
     onPrimaryContainer = White100,
-    secondaryContainer = White20, // Цвет индикатора в BottomBar
+    secondaryContainer = White20,
     onSecondaryContainer = Green90,
-    surfaceVariant = White100, // Цвет для карточек задач (белый)
-    onSurfaceVariant = Grey40,
-    outlineVariant = White10 // Цвет обводки (светло-серый с оттенком мяты)
+    surfaceVariant = White100,
+    onSurfaceVariant = Grey90,
+    outlineVariant = White10
 )
+
+private val SlateAmberColorScheme = lightColorScheme(
+    primary = Grey50,
+    onPrimary = White100,
+    secondary = Mint40,
+    tertiary = Green70,
+    background = White50,
+    surface = Grey50, 
+    surfaceContainer = Grey50,
+    onSurface = White100,
+    primaryContainer = Orange60,
+    onPrimaryContainer = White100,
+    secondaryContainer = White50,
+    onSecondaryContainer = Green90,
+    surfaceVariant = White100,
+    onSurfaceVariant = Grey90,
+    outline = White100,
+    outlineVariant = Grey90
+)
+
+enum class AppTheme(val displayName: String) {
+    SageMint("Sage & Mint"),
+    SlateAmber("Slate & Amber")
+}
+
 @Composable
 fun Test_appTheme(
+    selectedTheme: AppTheme = AppTheme.SlateAmber,
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -56,7 +81,10 @@ fun Test_appTheme(
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
         darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+        else -> when (selectedTheme) {
+            AppTheme.SageMint -> MintColorScheme
+            AppTheme.SlateAmber -> SlateAmberColorScheme
+        }
     }
     MaterialTheme(
         colorScheme = colorScheme,
@@ -64,20 +92,3 @@ fun Test_appTheme(
         content = content
     )
 }
-
-/*
-//"Indigo & Lavender"
-<span class="text-[8px] text-gray-400 font-mono">#5C6BC0</span>
-<span class="text-[8px] text-gray-400 font-mono">#7986CB</span>
-<span class="text-[8px] text-gray-400 font-mono">#F5F5FF</span>
-<span class="text-[8px] text-gray-400 font-mono">#FFFFFF</span>
-<span class="text-[8px] text-gray-400 font-mono">#283593</span>
-
-
-//"Slate & Amber"
-<span class="text-[8px] text-gray-400 font-mono">#37474F</span>
-<span class="text-[8px] text-gray-400 font-mono">#F59E0B</span>
-<span class="text-[8px] text-gray-400 font-mono">#F5F6F7</span>
-<span class="text-[8px] text-gray-400 font-mono">#FFFFFF</span>
-<span class="text-[8px] text-gray-400 font-mono">#263238</span>
- */

@@ -28,8 +28,10 @@ import com.example.test_app.viewmodel.TaskViewModel
 import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Calendar
 import com.composables.icons.lucide.Zap
+import com.example.test_app.ui.theme.Grey50
 import com.example.test_app.ui.theme.Mint20
 import com.example.test_app.ui.theme.Orange40
+import com.example.test_app.ui.theme.White100
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -137,24 +139,42 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text("New task") },
+            title = { Text("New task", color = MaterialTheme.colorScheme.onSurface) },
+            containerColor = MaterialTheme.colorScheme.surface,
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newItemName,
                         onValueChange = { newItemName = it },
-                        label = { Text("Name") },
-                        modifier = Modifier.fillMaxWidth()
+                        label = { Text("Name", color = MaterialTheme.colorScheme.onSurface) },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                            focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                            cursorColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     OutlinedButton(
                         onClick = { showDatePicker = true },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.outline
+                        )
                     ) {
                         Text("Date: ${dateFormatter.format(selectedDate)}")
                     }
                     OutlinedButton(
                         onClick = { showTimePicker = true },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     ) {
                         Text("Time: ${timeFormatter.format(selectedTime)}")
                     }
@@ -170,10 +190,10 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                         newItemName = ""
                         showDialog = false
                     }
-                }) { Text("Add") }
+                }) { Text("Add", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         )
     }
@@ -184,6 +204,9 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
         )
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
+            colors = DatePickerDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
@@ -192,13 +215,30 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                             .toLocalDate()
                     }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) { Text("OK", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.surface, // серый фон
+                    titleContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    headlineContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    weekdayContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    dayContentColor = MaterialTheme.colorScheme.onSurface, // белые числа
+                    navigationContentColor = MaterialTheme.colorScheme.onSurface, // белые стрелки
+                    yearContentColor = MaterialTheme.colorScheme.onSurface,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.onSurface, // белый кружок выбранного дня
+                    selectedDayContentColor = Grey50, // серое число внутри белого кружка
+                    todayContentColor = MaterialTheme.colorScheme.onSurface,
+                    todayDateBorderColor = MaterialTheme.colorScheme.onSurface,
+                    selectedYearContainerColor = White100,
+                    selectedYearContentColor = Grey50
+                )
+            )
         }
     }
 
@@ -210,18 +250,31 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
         )
         AlertDialog(
             onDismissRequest = { showTimePicker = false },
-            title = { Text("Enter time") },
+            containerColor = MaterialTheme.colorScheme.surface,
             confirmButton = {
                 TextButton(onClick = {
                     selectedTime = LocalTime.of(timePickerState.hour, timePickerState.minute)
                     showTimePicker = false
-                }) { Text("OK") }
+                }) { Text("OK", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showTimePicker = false }) { Text("Cancel") }
+                TextButton(onClick = { showTimePicker = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             },
             text = {
-                TimePicker(state = timePickerState)
+                TimePicker(
+                    state = timePickerState,
+                    colors = TimePickerDefaults.colors(
+                        clockDialColor = MaterialTheme.colorScheme.surface,
+                        clockDialUnselectedContentColor = MaterialTheme.colorScheme.onSurface,
+                        clockDialSelectedContentColor = MaterialTheme.colorScheme.surface,
+                        selectorColor = MaterialTheme.colorScheme.onSurface,
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.onSurface,
+                        timeSelectorSelectedContentColor = MaterialTheme.colorScheme.surface,
+                        timeSelectorUnselectedContainerColor = MaterialTheme.colorScheme.surface,
+                        timeSelectorUnselectedContentColor = MaterialTheme.colorScheme.onSurface
+                    )
+                )
             }
         )
     }

@@ -34,7 +34,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.composables.icons.lucide.Check
+import com.example.test_app.ui.theme.Grey90
+import com.example.test_app.ui.theme.White50
 import com.example.test_app.ui.theme.Test_appTheme
+import com.example.test_app.viewmodel.ThemeViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 // Экраны приложения
 sealed class Screen(val route: String, val title: String) {
@@ -49,8 +53,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Test_appTheme {
-                MainScreen()
+            val themeViewModel: ThemeViewModel = viewModel()
+            Test_appTheme(selectedTheme = themeViewModel.currentTheme) {
+                MainScreen(themeViewModel)
             }
         }
     }
@@ -58,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(themeViewModel: ThemeViewModel) {
     val navController = rememberNavController()
     val items = listOf(Screen.Tasks, Screen.Projects, Screen.Shopping)
     val icons = listOf(Lucide.Check, Lucide.FolderOpen, Lucide.ShoppingCart)
@@ -72,12 +77,19 @@ fun MainScreen() {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text(title) },
-            actions = {
-                IconButton(onClick = { navController.navigate(Screen.Settings.route)}) {
-                    Icon(Lucide.Settings, contentDescription = "Settings")
-                }
-            })
+            TopAppBar(
+                title = { Text(title) },
+                actions = {
+                    IconButton(onClick = { navController.navigate(Screen.Settings.route)}) {
+                        Icon(Lucide.Settings, contentDescription = "Settings", tint = MaterialTheme.colorScheme.onSurface)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
+                )
+            )
         },
         bottomBar = {
 
@@ -92,7 +104,7 @@ fun MainScreen() {
                                 selectedTextColor = MaterialTheme.colorScheme.onSurface,
                                 unselectedTextColor = MaterialTheme.colorScheme.onSurface,
                                 selectedIconColor = MaterialTheme.colorScheme.primary,
-                                unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                                unselectedIconColor = MaterialTheme.colorScheme.onSurface,
                                 indicatorColor = MaterialTheme.colorScheme.secondaryContainer
                             ),
                             onClick = {
@@ -131,7 +143,7 @@ fun MainScreen() {
                 val projectId = backStackEntry.arguments?.getLong("projectId") ?: 0L
                 ProjectDetailScreen(projectId = projectId)
             }
-            composable(Screen.Settings.route) { SettingsScreen() }
+            composable(Screen.Settings.route) { SettingsScreen(themeViewModel) }
         }
     }
 }

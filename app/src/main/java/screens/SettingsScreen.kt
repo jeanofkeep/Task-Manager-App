@@ -23,13 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.test_app.ui.theme.AppTheme
+import com.example.test_app.ui.theme.Grey90
 import com.example.test_app.ui.theme.White40
+import com.example.test_app.viewmodel.ThemeViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen() {
-    val themeOptions = listOf("Sage & Mint", "Indigo & Lavender", "Slate & Amber")
-    var selectedTheme by remember { mutableStateOf(themeOptions[0]) }
+fun SettingsScreen(themeViewModel: ThemeViewModel) {
+    val themeOptions = AppTheme.entries
     var expanded by remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
@@ -43,16 +45,20 @@ fun SettingsScreen() {
             modifier = Modifier.fillMaxWidth()
         ) {
             TextField(
-                value = selectedTheme,
+                value = themeViewModel.currentTheme.displayName,
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Theme") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = White40,
-                    focusedContainerColor = White40,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.outline,
-                    focusedIndicatorColor = MaterialTheme.colorScheme.primary
+                    focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    focusedLabelColor = MaterialTheme.colorScheme.primary
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -61,17 +67,17 @@ fun SettingsScreen() {
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                containerColor = White40
+                containerColor = MaterialTheme.colorScheme.surfaceVariant
             ) {
-                themeOptions.forEach { option ->
+                themeOptions.forEach { theme ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = { Text(theme.displayName, color = MaterialTheme.colorScheme.onSurfaceVariant) },
                         onClick = {
-                            selectedTheme = option
+                            themeViewModel.onThemeChange(theme)
                             expanded = false
                         },
                         colors = MenuDefaults.itemColors(
-                            textColor = MaterialTheme.colorScheme.onSurface
+                            textColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }

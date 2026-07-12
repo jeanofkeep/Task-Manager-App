@@ -85,7 +85,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                 ) {
                     Column(modifier = Modifier.padding(12.dp)) {
                         // Header
@@ -101,11 +101,11 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                             }
                             Spacer(Modifier.width(10.dp))
                             Column(modifier = Modifier.weight(1f)) {
-                                Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text(project.name, fontWeight = FontWeight.Bold, fontSize = 16.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                                 Text(
                                     text = "${project.completedTasks} из ${project.totalTasks} задач · до ${project.dueDateText}",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                                 )
                             }
                             Box(modifier = Modifier.width(60.dp)) {
@@ -121,11 +121,11 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                 )
                             }
                             IconButton(onClick = { projectViewModel.deleteProject(project) }) {
-                                Icon(Icons.Filled.Delete, contentDescription = "Delete", modifier = Modifier.size(20.dp))
+                                Icon(Icons.Filled.Delete, contentDescription = "Delete", modifier = Modifier.size(20.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                             }
                         }
                         Spacer(Modifier.height(8.dp))
-                        Divider(color = Color(0xFFF0F0F0), thickness = 1.dp)
+                        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant, thickness = 1.dp)
                         // Tasks List
                         projectTasks.forEach { task ->
                             Row(
@@ -144,12 +144,12 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                         text = task.name,
                                         fontSize = 14.sp,
                                         textDecoration = if (task.status) TextDecoration.LineThrough else TextDecoration.None,
-                                        color = if (task.status) Color.Gray else Color.Unspecified
+                                        color = if (task.status) MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f) else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
-                                    Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = Color.LightGray)
+                                    Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                                 }
                                 IconButton(onClick = { projectViewModel.delete_task(task) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = White30, modifier = Modifier.size(16.dp))
+                                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(16.dp))
                                 }
                             }
                         }
@@ -164,9 +164,9 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                 .padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(Lucide.CirclePlus, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(20.dp))
+                            Icon(Lucide.CirclePlus, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                             Spacer(Modifier.width(8.dp))
-                            Text("Add task", color = Color.Gray, fontSize = 14.sp)
+                            Text("Add task", color = MaterialTheme.colorScheme.primary, fontSize = 14.sp)
                         }
                     }
                 }
@@ -177,18 +177,26 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
     if (showProjectDialog) {
         AlertDialog(
             onDismissRequest = { showProjectDialog = false },
-            title = { Text("New project") },
+            title = { Text("New project", color = MaterialTheme.colorScheme.onSurface) },
+            containerColor = MaterialTheme.colorScheme.surface,
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     OutlinedTextField(
                         value = newProjectName,
                         onValueChange = { newProjectName = it },
                         label = { Text("Name of project") },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        )
                     )
                     OutlinedButton(
                         onClick = { showDatePicker = true },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.primary
+                        )
                     ) {
                         Text("Срок: ${dateFormatter.format(selectedDate)}")
                     }
@@ -212,13 +220,18 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
     if (showTaskDialog) {
         AlertDialog(
             onDismissRequest = { showTaskDialog = false },
-            title = { Text("Task for project") },
+            title = { Text("Task for project", color = MaterialTheme.colorScheme.onSurface) },
+            containerColor = MaterialTheme.colorScheme.surface,
             text = {
                 OutlinedTextField(
                     value = newTaskName,
                     onValueChange = { newTaskName = it },
                     label = { Text("Name") },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                    )
                 )
             },
             confirmButton = {
@@ -241,6 +254,9 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
         )
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
+            colors = DatePickerDefaults.colors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
             confirmButton = {
                 TextButton(onClick = {
                     datePickerState.selectedDateMillis?.let { millis ->
@@ -253,7 +269,17 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                 TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                colors = DatePickerDefaults.colors(
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    headlineContentColor = MaterialTheme.colorScheme.primary,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
+                    selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
+                    todayContentColor = MaterialTheme.colorScheme.primary,
+                    todayDateBorderColor = MaterialTheme.colorScheme.primary
+                )
+            )
         }
     }
 }
