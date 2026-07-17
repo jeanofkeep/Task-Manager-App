@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.graphics.Color
 
+/*
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF7BBF9A),
     secondary = Color(0xFF5BA07A),
@@ -25,6 +26,7 @@ private val DarkColorScheme = darkColorScheme(
     surfaceVariant = Color(0xFF234431),
     onSurfaceVariant = Color(0xFFC4C8BB)
 )
+*/
 
 private val MintColorScheme = lightColorScheme(
     primary = Mint20,
@@ -80,7 +82,7 @@ fun Test_appTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        darkTheme -> DarkColorScheme
+        //darkTheme -> LightColorScheme
         else -> when (selectedTheme) {
             AppTheme.SageMint -> MintColorScheme
             AppTheme.SlateAmber -> SlateAmberColorScheme

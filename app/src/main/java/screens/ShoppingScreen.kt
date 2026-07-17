@@ -128,7 +128,7 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
                 OutlinedTextField(
                     value = newItemName,
                     onValueChange = { newItemName = it },
-                    label = { Text("Name") },
+                    label = { Text("Name", color = MaterialTheme.colorScheme.onSurface) },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -143,10 +143,10 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
                         newItemName = ""
                         showDialog = false
                     }
-                }) { Text("Add") }
+                }) { Text("Add", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         )
     }

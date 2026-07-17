@@ -30,6 +30,8 @@ import com.composables.icons.lucide.Lucide
 import com.composables.icons.lucide.Briefcase
 import com.composables.icons.lucide.Plus
 import com.composables.icons.lucide.CirclePlus
+import com.example.test_app.ui.theme.Grey50
+import com.example.test_app.ui.theme.White100
 import com.example.test_app.ui.theme.White30
 import java.time.Instant
 import java.time.LocalDate
@@ -184,7 +186,7 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                     OutlinedTextField(
                         value = newProjectName,
                         onValueChange = { newProjectName = it },
-                        label = { Text("Name of project") },
+                        label = { Text("Name of project", color = MaterialTheme.colorScheme.onSurface) },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedTextColor = MaterialTheme.colorScheme.onSurface,
@@ -194,11 +196,12 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                     OutlinedButton(
                         onClick = { showDatePicker = true },
                         modifier = Modifier.fillMaxWidth(),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
                         colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = MaterialTheme.colorScheme.primary
+                            contentColor = MaterialTheme.colorScheme.outline
                         )
                     ) {
-                        Text("Срок: ${dateFormatter.format(selectedDate)}")
+                        Text("Date: ${dateFormatter.format(selectedDate)}")
                     }
                 }
             },
@@ -209,10 +212,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         newProjectName = ""
                         showProjectDialog = false
                     }
-                }) { Text("Add") }
+                }) { Text("Add", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showProjectDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showProjectDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         )
     }
@@ -230,7 +233,12 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = MaterialTheme.colorScheme.onSurface,
-                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        focusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.onSurface,
+                        focusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedLabelColor = MaterialTheme.colorScheme.onSurface,
+                        cursorColor = MaterialTheme.colorScheme.onSurface
                     )
                 )
             },
@@ -241,10 +249,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         newTaskName = ""
                         showTaskDialog = false
                     }
-                }) { Text("Add") }
+                }) { Text("Add", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showTaskDialog = false }) { Text("Cancel") }
+                TextButton(onClick = { showTaskDialog = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         )
     }
@@ -263,21 +271,28 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                         selectedDate = Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDate()
                     }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) { Text("OK", color = MaterialTheme.colorScheme.onSurface) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                TextButton(onClick = { showDatePicker = false }) { Text("Cancel", color = MaterialTheme.colorScheme.onSurface) }
             }
         ) {
             DatePicker(
                 state = datePickerState,
                 colors = DatePickerDefaults.colors(
-                    titleContentColor = MaterialTheme.colorScheme.primary,
-                    headlineContentColor = MaterialTheme.colorScheme.primary,
-                    selectedDayContainerColor = MaterialTheme.colorScheme.primary,
-                    selectedDayContentColor = MaterialTheme.colorScheme.onPrimary,
-                    todayContentColor = MaterialTheme.colorScheme.primary,
-                    todayDateBorderColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface, // серый фон
+                    titleContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    headlineContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    weekdayContentColor = MaterialTheme.colorScheme.onSurface, // белый
+                    dayContentColor = MaterialTheme.colorScheme.onSurface, // белые числа
+                    navigationContentColor = MaterialTheme.colorScheme.onSurface, // белые стрелки
+                    yearContentColor = MaterialTheme.colorScheme.onSurface,
+                    selectedDayContainerColor = MaterialTheme.colorScheme.onSurface, // белый кружок выбранного дня
+                    selectedDayContentColor = Grey50, // серое число внутри белого кружка
+                    todayContentColor = MaterialTheme.colorScheme.onSurface,
+                    todayDateBorderColor = MaterialTheme.colorScheme.onSurface,
+                    selectedYearContainerColor = White100,
+                    selectedYearContentColor = Grey50
                 )
             )
         }
