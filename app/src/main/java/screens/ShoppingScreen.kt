@@ -111,7 +111,10 @@ fun ShoppingScreen(shoppingViewModel: ShoppingViewModel = viewModel()) {
                         )
                         */
                         IconButton(onClick = { shoppingViewModel.deleteItem_shop(item) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                            Icon(Icons.Filled.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp))
                         }
                     }
                 }

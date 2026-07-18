@@ -151,7 +151,10 @@ fun ProjectsScreen(navController: NavController, projectViewModel: ProjectViewMo
                                     Text(task.dateText, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f))
                                 }
                                 IconButton(onClick = { projectViewModel.delete_task(task) }) {
-                                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(16.dp))
+                                    Icon(Icons.Filled.Delete,
+                                        contentDescription = "Delete",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(18.dp))
                                 }
                             }
                         }

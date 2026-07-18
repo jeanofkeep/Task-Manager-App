@@ -129,7 +129,10 @@ fun TasksScreen(taskViewModel: TaskViewModel = viewModel()) {
                             )
                         }
                         IconButton(onClick = { taskViewModel.delete_task(item) }) {
-                            Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                            Icon(Icons.Filled.Delete,
+                                contentDescription = "Delete",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(24.dp))
                         }
                     }
                 }
